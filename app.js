@@ -5,7 +5,9 @@ const CONFIG = require ("./config/config.js")
 
 //connect the route
 const bookRoute = require("./routes/bookRoute")
+const authorRoute = require("./routes/authorRoute")
 
+//import the database
 const dbConnect = require("./db/mongodb")
 
 
@@ -20,8 +22,10 @@ dbConnect()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-//add the book routes to be used as a middleware
+//add the book/author routes to be used as a middleware
 app.use('/api/v1/books', bookRoute)
+app.use('/api/v1/authors', authorRoute)
+
 
 //A GET request to confirm that the server is working and add a response
 app.get("/", (req, res) => {

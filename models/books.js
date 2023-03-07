@@ -43,7 +43,7 @@ const BookSchema =  new Schema({
     lastUpdateAt: {
         type: Date,
         default: Date.now
-    },
+    }
 
     
 })

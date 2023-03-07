@@ -2,75 +2,25 @@ const express = require("express")
 const bookModel = require('../models/books')
 const {addBookValidationMW, updateBookValidationMW} = require('../validators/books_validator')
 
+const bookController = require('../controllers/bookController')
+
 const bookRoute = express.Router()
 
 //book router to get all books
-bookRoute.get('/', (req, res) => {
-    bookModel.find()
-    .then(books => {
-        res.send(books)
-    })
-
-    .catch(err => {
-        console.log(err)
-        res.send(err)
-    })
+bookRoute.get('/', bookController.getAllBooks)
 
 //get book by id
-bookRoute.get('/:id', (req, res) => {
-    const id = req.params.id
-    bookModel.findById(id)
-    .then(book => {
-        res.status(200).send(book)
-    })
-    .catch(err => {
-        console.log(err)
-        req.status(404).send(err)
-    })
-})
+bookRoute.get('/:id', bookController.getBooksById)
 
 //post or add book using the book validation middleware
-bookRoute.post('/', addBookValidationMW, (req, res) => {
-    const book = req.body
-    book.lastUpdateAt = new Date() //this sets the lastUpdateAt to the current date
-    bookModel.create(book)
-        .then(book => {
-            res.status(201).send(book)
-    })
-    .catch(err => {
-        console.log(err)
-        res.status(500).send(err)
-    })
-})
+bookRoute.post('/', addBookValidationMW, bookController.addBooks)
 
 //put book route by id, update the existing book details with validations 
-bookRoute.put('/:id', updateBookValidationMW, (req, res) => {
-    const id = req.params.id
-    const book = req.body
-    book.lastUpdateAt = new Date() //this sets the lastUpdateAt to the current date
-    bookModel.findByIdAndUpdate(id, book, {new: true})
-        .then(newBook => {
-            res.status(200).send(newBook)
-    })
-    .catch(err => {
-        console.log(err)
-        res.status(500).send(err)
-    })
-})
+bookRoute.put('/:id', updateBookValidationMW, bookController.updateBooksById)
 
 //delete book by id
-bookRoute.delete('/:id', (req, res) => {
-    const id = req.params.id
-        bookModel.findByIdAndRemove(id)
-        .then(book => {
-            res.status(200).send(book)
-    })
-    .catch(err => {
-        console.log(err)
-        res.status(500).send(err)
-    })
-})
+bookRoute.delete('/:id', bookController.deleteBooksById)
 
-})
+
 
 module.exports = bookRoute
